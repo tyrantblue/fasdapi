@@ -1,0 +1,2 @@
+# fasdapi
+FastAPI study project
