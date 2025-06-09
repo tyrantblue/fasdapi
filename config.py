@@ -12,6 +12,8 @@ class Config(BaseSettings):
     PROJECT_DESCRIPTION: str = "Fasdapi"
     # 静态资源目录
     STATIC_DIR: str = os.path.join(os.getcwd(), "static")
+    # 视图目录
+    TEMPLATES_DIR: str = os.path.join(os.getcwd(), "templates")
     # 跨域请求
     CORS_ORIGINS: List[str] = ["*"]
     CORS_ALLOW_CREDENTIALS: bool = True
