@@ -1,0 +1,26 @@
+database:
+  mysql:
+    base_db:
+      host: localhost
+      port: 3306
+      username: your username
+      password: your password
+      database_name: db_fast
+
+#    product_db:
+#      host: your host
+#      port: your port
+#      username: your username
+#      password: your password
+#      database_name: your database name
+
+    tortoise_apps:
+      main_model:
+        models:
+          - models.base_db
+        default_connection: base_db
+
+#      test_model:
+#        models:
+#          - models.product_db
+#        default_connection: product_db
