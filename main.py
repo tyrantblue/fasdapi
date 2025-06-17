@@ -19,9 +19,7 @@ from core.Exceptions import (
 from core.Router import all_router
 from core.Helper import swagger_monkey_patch
 
-
-# 国内访问swagger
-applications.get_swagger_ui_html = swagger_monkey_patch
+from database.mysql import init_db
 
 
 class CustomState(State):
@@ -36,6 +34,10 @@ class CreateFastAPI(FastAPI):
     固定state属性防止编辑器警告，不写也行
     """
     state: CustomState
+
+
+# 国内访问swagger
+applications.get_swagger_ui_html = swagger_monkey_patch
 
 
 application = CreateFastAPI(
@@ -84,6 +86,8 @@ application.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="s
 # 添加请求头
 application.state.views = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
+# 使用tortoise-orm 连接数据库
+init_db(application)
 
 app = application
 
