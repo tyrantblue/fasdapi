@@ -25,4 +25,3 @@ def swagger_monkey_patch(*args, **kwargs):
         *args, **kwargs,
         swagger_js_url="https://cdn.staticfile.net/swagger-ui/5.1.0/swagger-ui-bundle.min.js",
         swagger_css_url="https://cdn.staticfile.net/swagger-ui/5.1.0/swagger-ui.min.css")
-

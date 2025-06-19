@@ -1,10 +1,9 @@
 """
 
 """
-
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, Cookie
 from fastapi.responses import HTMLResponse
-
+from typing import Optional
 from models.base_db import User
 
 home_view = APIRouter(prefix="/home", tags=["主页视图"])
@@ -40,3 +39,24 @@ async def index(request: Request, username: str = Form(), password: str = Form()
         }
     }
     return request.app.state.views.TemplateResponse("home/result.html", res)
+
+
+@home_view.get("/cookie", response_class=HTMLResponse)
+async def cookie_view(request: Request) -> HTMLResponse:
+    """
+    结果界面
+    :param request: 请求
+    :param cookie:
+    :return:
+    """
+
+    res: dict = {
+        "request": request,
+        "data": {
+            "session": str(request.session),
+        }
+    }
+    request.session["session_1"] = "session_1"
+    request.session["session_2"] = "session_2"
+    print(request.session)
+    return request.app.state.views.TemplateResponse("home/cookie.html", res)

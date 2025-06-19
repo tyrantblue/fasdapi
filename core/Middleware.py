@@ -1,5 +1,4 @@
 import time
-import uuid
 
 from starlette.datastructures import MutableHeaders
 from starlette.requests import Request

@@ -3,7 +3,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
-from starlette.datastructures import State
 from starlette.middleware.sessions import SessionMiddleware
 
 from config import settings
@@ -19,28 +18,12 @@ from core.Exceptions import (
 from core.Router import all_router
 from core.Helper import swagger_monkey_patch
 
-from database.mysql import init_db
-
-
-class CustomState(State):
-    """
-    可以继承自Starlette.datastructures，不继承也行
-    """
-    views: Jinja2Templates
-
-
-class CreateFastAPI(FastAPI):
-    """
-    固定state属性防止编辑器警告，不写也行
-    """
-    state: CustomState
-
 
 # 国内访问swagger
 applications.get_swagger_ui_html = swagger_monkey_patch
 
 
-application = CreateFastAPI(
+application = FastAPI(
     debug=settings.APP_DEBUG,
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
@@ -64,12 +47,12 @@ application.include_router(all_router)
 
 
 # 中间件 (不要写错了关键字）
-application.add_middleware(MyMiddleware)  # type: ignore
+# application.add_middleware(MyMiddleware)  # type: ignore
 application.add_middleware(
         SessionMiddleware,  # type: ignore
         secret_key=settings.SESSION_SECRET_KEY,
         session_cookie=settings.SESSION_SESSION_COOKIE,
-        # max_age=4
+        max_age=settings.SESSION_MAX_AGE
 )
 application.add_middleware(
     CORSMiddleware,  # type: ignore
@@ -83,11 +66,7 @@ application.add_middleware(
 # 挂载静态文件
 application.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 
-# 添加请求头
+# 在请求头中增加
 application.state.views = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
-# 使用tortoise-orm 连接数据库
-init_db(application)
-
 app = application
-
