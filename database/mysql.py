@@ -4,7 +4,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from config import tortoise_settings
 
 
-async def init_tortoise(app: FastAPI) -> None:
+def init_tortoise(app: FastAPI) -> None:
     """
     初始化数据库
     :return:
@@ -14,6 +14,7 @@ async def init_tortoise(app: FastAPI) -> None:
     register_tortoise(
         app,
         config=tortoise_settings.tortoise_orm_config,
-        generate_schemas=True,
+        generate_schemas=False,
         add_exception_handlers=True,
     )
+    print(f"mysql 连接成功！")

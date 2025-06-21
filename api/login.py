@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-login_router = APIRouter()
+login_router = APIRouter(tags=["login"])
 
 
 class LoginUser(BaseModel):

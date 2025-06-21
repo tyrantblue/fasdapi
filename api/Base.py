@@ -3,11 +3,13 @@
 from fastapi import APIRouter
 from api.login import login_router
 from api.redis_test import redis_router
+from api.user import user_router
 
 
 API_router = APIRouter(prefix="/api", tags=["api接口"])
 API_router.include_router(login_router)
 API_router.include_router(redis_router)
+API_router.include_router(user_router)
 
 # 这种方式耦合度太高了
 # API_router.post('/login')(login)

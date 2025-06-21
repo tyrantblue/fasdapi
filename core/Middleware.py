@@ -4,6 +4,11 @@ from starlette.datastructures import MutableHeaders
 from starlette.requests import Request
 from starlette.types import ASGIApp, Receive, Send, Message
 from core.Helper import random_str
+from fastapi import FastAPI
+
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from config import settings
 
 
 class MyMiddleware:
@@ -34,6 +39,21 @@ class MyMiddleware:
         await self.app(scope, receive, send_wrapper)
 
 
+def add_middleware_handler(app: FastAPI) -> None:
+    # application.add_middleware(MyMiddleware)  # type: ignore
+    app.add_middleware(
+        SessionMiddleware,  # type: ignore
+        secret_key=settings.SESSION_SECRET_KEY,
+        session_cookie=settings.SESSION_SESSION_COOKIE,
+        max_age=settings.SESSION_MAX_AGE
+    )
+    app.add_middleware(
+        CORSMiddleware,  # type: ignore
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
+        allow_methods=settings.CORS_ALLOW_METHODS,
+        allow_headers=settings.CORS_ALLOW_HEADERS,
+    )
 
 
 

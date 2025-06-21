@@ -10,8 +10,8 @@ class Config(BaseSettings):
     APP_DEBUG: bool = True
     # 项目信息
     VERSION: str = "0.0.1"
-    PROJECT_NAME: str = "Fasdapi"
-    PROJECT_DESCRIPTION: str = "Fasdapi"
+    PROJECT_NAME: str = "FasdAPI"
+    PROJECT_DESCRIPTION: str = "FasdAPI"
     # 静态资源目录
     STATIC_DIR: str = os.path.join(os.getcwd(), "static")
     # 视图目录
@@ -64,7 +64,7 @@ class DatabaseSettings(BaseSettings):
 
 
 class TortoiseSettings(BaseSettings):
-    base_db: DatabaseSettings = SettingsConfigDict(env_file=".env", extra="ignore")
+    base_db: DatabaseSettings = DatabaseSettings()
 
     tortoise_apps: Dict[str, Any] = {
         "main_model": {
