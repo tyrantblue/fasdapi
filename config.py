@@ -25,6 +25,9 @@ class Config(BaseSettings):
     SESSION_SECRET_KEY: str = "YOUR KEY."
     SESSION_SESSION_COOKIE: str = "session"
     SESSION_MAX_AGE: int = 10
+    # token
+    TOKEN_SECRET_KEY: str = "test_secret_key"
+    TOKEN_ALGORITHM: str = "HS256"
 
 
 class RedisSettings(BaseSettings):
@@ -68,7 +71,7 @@ class TortoiseSettings(BaseSettings):
 
     tortoise_apps: Dict[str, Any] = {
         "main_model": {
-            "models": ["models.base_db"],
+            "models": ["models"],
             "default_connection": "base_db"
         }
     }

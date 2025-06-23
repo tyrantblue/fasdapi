@@ -1,7 +1,7 @@
 # 路由汇总
 from fastapi import APIRouter
-from api.Base import API_router
-from views.Base import view_router
+from api.base import API_router
+from views.base import view_router
 
 all_router = APIRouter()
 

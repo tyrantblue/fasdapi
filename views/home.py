@@ -4,6 +4,7 @@
 from fastapi import APIRouter, Request, Form, Cookie
 from fastapi.responses import HTMLResponse
 from typing import Optional
+
 # from models.base_db import User
 
 home_view = APIRouter(prefix="/home", tags=["主页视图"])
@@ -39,7 +40,6 @@ async def register(request: Request) -> HTMLResponse:
 #         }
 #     }
 #     return request.app.state.views.TemplateResponse("home/result.html", res)
-
 
 @home_view.get("/cookie", response_class=HTMLResponse)
 async def cookie_view(request: Request) -> HTMLResponse:

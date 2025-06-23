@@ -3,7 +3,7 @@ import time
 from starlette.datastructures import MutableHeaders
 from starlette.requests import Request
 from starlette.types import ASGIApp, Receive, Send, Message
-from core.Helper import random_str
+from core.utils import random_str
 from fastapi import FastAPI
 
 from starlette.middleware.sessions import SessionMiddleware
