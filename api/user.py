@@ -1,16 +1,20 @@
 from typing import List
 from tortoise.exceptions import DoesNotExist
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Path
 from models import User
 from schemas.user import UserOut, UserUpdate
 from api.dependencies import create_user
 from core.response import success, fail, ResponseModel
+from core.security import require_scopes, require_find_user, require_update_user, require_delete_user
+from core.scopes import Scopes
 
 
 user_router = APIRouter(prefix="/users", tags=["user"])
 
 
-@user_router.get('/all', response_model=ResponseModel[List[UserOut]])
+@user_router.get('/all',
+                 response_model=ResponseModel[List[UserOut]],
+                 dependencies=[Depends(require_scopes(Scopes.USER_FIND_ALL))])
 async def get_all_user():
     """
     获取全部用户
@@ -20,14 +24,17 @@ async def get_all_user():
     return success(data=users)
 
 
-@user_router.get('/{user_id}', response_model=ResponseModel[UserOut])
-async def get_one_user(user_id: int):
+@user_router.get('/{target_user_id}',
+                 response_model=ResponseModel[UserOut],
+                 dependencies=[Depends(require_find_user)])
+async def get_one_user(target_user_id: int = Path()):
     """
     根据ID获取用户信息
-    :param user_id: 用户id
+    :param target_user_id: 用户id
     :return:
     """
-    user = await User.get_or_none(uid=user_id)
+
+    user = await User.get_or_none(uid=target_user_id)
 
     if not user:
         return fail(message="用户不存在，你的查询参数是不是有问题？", code=status.HTTP_404_NOT_FOUND)
@@ -35,7 +42,9 @@ async def get_one_user(user_id: int):
     return success(data=user)
 
 
-@user_router.post('/', response_model=ResponseModel[UserOut])
+@user_router.post('/',
+                  response_model=ResponseModel[UserOut],
+                  dependencies=[Depends(require_scopes(Scopes.USER_CREATE_SELF))])
 async def create_user(user_out: User = Depends(create_user)):
     """
     创建用户
@@ -45,8 +54,10 @@ async def create_user(user_out: User = Depends(create_user)):
     return await user_out
 
 
-@user_router.put('/{user_id}', response_model=ResponseModel[UserOut])
-async def update_user(user_id: int, user_update: UserUpdate):
+@user_router.put('/{user_id}',
+                 response_model=ResponseModel[UserOut],
+                 dependencies=[Depends(require_update_user)])
+async def update_user(user_update: UserUpdate, user_id: int = Path()):
     """
     更新用户信息。
     :param user_id: 需要更新的用户ID
@@ -64,7 +75,9 @@ async def update_user(user_id: int, user_update: UserUpdate):
     return success(data=user)
 
 
-@user_router.delete('/{user_id}', response_model=ResponseModel[UserOut])
+@user_router.delete('/{user_id}',
+                    response_model=ResponseModel[UserOut],
+                    dependencies=[Depends(require_delete_user)])
 async def delete_user(user_id: int):
     """
     删除用户

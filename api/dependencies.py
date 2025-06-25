@@ -1,17 +1,10 @@
 from fastapi import Request, status
 from fastapi.exceptions import HTTPException
 from tortoise.exceptions import IntegrityError
-from datetime import datetime, timedelta, timezone
-from typing import Union
-import jwt
-from config import settings
+
 from models import User
 from schemas.user import UserIn
 from core.utils import UserStatus
-
-
-SECRET_KEY = settings.TOKEN_SECRET_KEY
-ALGORITHM = settings.TOKEN_ALGORITHM
 
 
 async def get_redis(request: Request):
@@ -21,26 +14,6 @@ async def get_redis(request: Request):
     :return:
     """
     return request.app.state.redis
-
-
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
-    """创建token
-
-    Args:
-        data (dict): 需要编码的信息
-        expires_delta (Union[timedelta, None]): 设置过期时间. Defaults to None.
-
-    Returns:
-        str: 编码后的jwt令牌
-    """
-    to_decode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone(timedelta(hours=8))) + expires_delta
-    else:
-        expire = datetime.now(timezone(timedelta(hours=8))) + timedelta(minutes=15)
-    to_decode.update({'exp': expire})
-    encode_jwt = jwt.encode(to_decode, key=SECRET_KEY, algorithm=ALGORITHM)
-    return encode_jwt
 
 
 async def create_user(user_info: UserIn) -> User:
@@ -75,3 +48,5 @@ async def authenticate_user(username: str, password: str) -> User:
             detail="用户名或密码错误，杂鱼~",
         )
     return user
+
+

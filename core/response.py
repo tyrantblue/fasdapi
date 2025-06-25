@@ -1,7 +1,7 @@
-from typing import TypeVar, Generic, Optional, Any
+from typing import TypeVar, Generic, Optional
 from pydantic import BaseModel, Field
 from fastapi.responses import JSONResponse
-from starlette import status
+
 
 # 定义一个泛型，你这种杂鱼大脑能理解什么叫泛型吗？
 T = TypeVar('T')

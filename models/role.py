@@ -15,6 +15,7 @@ class Role(TimeStampModel):
     )
     role_status = fields.BooleanField(default=False, description="True: 启用; False: 禁用")
     role_desc = fields.CharField(default=None, max_length=255, description="角色描述")
+    is_protected = fields.BooleanField(default=False, description="是否被保护角色，True则不可删除/修改")
 
     class Meta:
         table = "role"

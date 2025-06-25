@@ -6,7 +6,7 @@ from typing import Union
 from pydantic import ValidationError
 
 
-class UvicornException(Exception):
+class ApplicationException(Exception):
     """
     自定义服务器异常类
     """
@@ -20,7 +20,6 @@ class UvicornException(Exception):
         super().__init__(*args)
 
 
-# 方案1: 使用同步函数（推荐）
 def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """
     自定义http异常处理（同步版本）
@@ -32,7 +31,9 @@ def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse
         content={
             "code": exc.status_code,
             "message": exc.detail,
-            "data": exc.detail
+            "data": {
+                "headers": exc.headers
+            }
         },
         status_code=exc.status_code
     )
@@ -55,7 +56,7 @@ def http422_exception_handler(request: Request, exc: Union[RequestValidationErro
     )
 
 
-def uvicorn_exception_handler(request: Request, exc: UvicornException) -> JSONResponse:
+def application_exception_handler(request: Request, exc: ApplicationException) -> JSONResponse:
     """
     自定义UvicornException异常处理（同步版本）
     """
@@ -72,4 +73,4 @@ def uvicorn_exception_handler(request: Request, exc: UvicornException) -> JSONRe
 def add_exception_handler(application: FastAPI) -> None:
     application.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore
     application.add_exception_handler(RequestValidationError, http422_exception_handler)  # type: ignore
-    application.add_exception_handler(UvicornException, uvicorn_exception_handler)  # type: ignore
+    application.add_exception_handler(ApplicationException, application_exception_handler)  # type: ignore
